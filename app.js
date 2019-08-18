@@ -10,9 +10,10 @@ GAME RULES:
 */
 
 
-var scores, roundScore, activePlayer;
+var scores, roundScore, activePlayer, gamePlaying;
 
 init();
+
 
 //document.querySelector('#current-' + activePlayer).textContent = dice;
 //document.querySelector('#current-' + activePlayer).innerHTML = '<em>' + dice + '</em>';
@@ -20,26 +21,32 @@ init();
 //console.log(x);
 
 document.querySelector('.btn-roll').addEventListener('click', function(){
-    var dice = Math.floor(Math.random()*6) + 1;
 
-    var diceDOM = document.querySelector('.dice');
+    if (gamePlaying) {
+        var dice = Math.floor(Math.random()*6) + 1;
+
+        var diceDOM = document.querySelector('.dice');
+        
+        diceDOM.style.display = 'block';
+        diceDOM.src = 'dice-' + dice + '.png';
     
-    diceDOM.style.display = 'block';
-    diceDOM.src = 'dice-' + dice + '.png';
-
-    if (dice !== 1) {
-        //Add score
-        roundScore += dice;
-        document.querySelector('#current-' + activePlayer).textContent = roundScore;
-    } else {
-        // Next player
-        nextPlayer();
-
+        if (dice !== 1) {
+            //Add score
+            roundScore += dice;
+            document.querySelector('#current-' + activePlayer).textContent = roundScore;
+        } else {
+            // Next player
+            nextPlayer();
+    
+        }
     }
+
+   
 
 });
 
 document.querySelector('.btn-hold').addEventListener('click', function() {
+    if (gamePlaying) {
     //ADD CURRENT SCORE TO GLOBAL SCORE
     scores[activePlayer] += roundScore; 
 
@@ -53,10 +60,13 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
         document.querySelector('.dice').style.display = 'none';
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
         document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+        gamePlaying = false;
 
     } else {
         nextPlayer();
     }
+    }
+    
 
 });
 
@@ -81,6 +91,8 @@ function nextPlayer() {
 document.querySelector('.btn-new').addEventListener('click', init);
 
 function init() {
+    gamePlaying = true;
+
     scores = [0, 0];
     roundScore = 0;
     activePlayer = 0;
